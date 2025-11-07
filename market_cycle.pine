@@ -1,0 +1,23 @@
+//@version=6
+indicator("距21EMA的ATR归一化距离 (v6)", overlay=false, precision=2)
+
+// 参数
+emaLen = input.int(21, "EMA长度")
+atrLen = input.int(14, "ATR长度")
+th1    = input.float(1.0, "阈值1(±)", step=0.1)
+th2    = input.float(2.0, "阈值2(±)", step=0.1)
+showLabel = input.bool(true, "显示最后一根的标注")
+
+// 计算
+ema   = ta.ema(close, emaLen)
+atr14 = ta.atr(atrLen)
+ratio = atr14 != 0 ? (close - ema) / atr14 : na  // 单位：ATR倍数
+
+// 绘制
+col = ratio >= 0 ? color.new(color.lime, 0) : color.new(color.red, 0)
+plot(ratio, "距离/ATR", color=col, linewidth=2)
+hline(0,   "0线",     color=color.gray)
+hline( th1, "+阈值1", color=color.new(color.blue, 50))
+hline(-th1, "-阈值1", color=color.new(color.blue, 50))
+hline( th2, "+阈值2", color=color.new(color.purple, 50))
+hline(-th2, "-阈值2", color=color.new(color.purple, 50))
